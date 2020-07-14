@@ -52,6 +52,7 @@ const data = JSON.parse(localStorage.getItem('items'))
 
 // var currentCover;
 var myCover;
+var newItem;
 
 // Add your event listeners here 👇
 document.addEventListener('DOMContentLoaded', randomPoster);
@@ -62,6 +63,7 @@ viewSavedButton.addEventListener('click', showSaved);
 createNewButton.addEventListener('click', createPoster);
 saveButton.addEventListener('click', showNewPoster);
 saveButton.addEventListener('click', saveNewPoster);
+savedCoversSection.addEventListener('dblclick', removeSaved);
 // saveButton.addEventListener('click', addPoster);
 // Create your eent handlers and other functions here 👇
 
@@ -127,7 +129,6 @@ function showNewPoster() {
 };
 
 function saveNewPoster() {
-  debugger;
   var isIncluded = false;
   for (var i = 0; i < mySavedBooks.length; i++) {
     if (mySavedBooks[i]['cover'] == myCover['cover'] && mySavedBooks[i]['title'] == myCover['title'] && mySavedBooks[i]['tagline1'] == myCover['tagline1'] && mySavedBooks[i]['tagline2'] == myCover['tagline2']) {
@@ -162,7 +163,7 @@ function displaySaved() {
     let newItem = document.createElement('div')
     newItem.classList.add('mini-cover')
     let newMiniImg = document.createElement('img')
-    newMiniImg.classList.add('mini-cover')
+    newMiniImg.classList.add('mini-cover', 'target-item')
     let newMiniTitle = document.createElement('h2')
     newMiniTitle.classList.add('cover-title')
     let miniTagline = document.createElement('h3')
@@ -170,17 +171,37 @@ function displaySaved() {
     miniTagline.innerHTML = "A tale of "
     let newMiniTagline1 = document.createElement('span');
     let newMiniTagline2 = document.createElement('span');
+    let newMiniTaglineAnd = document.createElement('span');
+    newMiniTaglineAnd.innerHTML = " and "
     newMiniTagline1.classList.add('tagline-1')
     miniTagline.appendChild(newMiniTagline1)
     newMiniTagline2.classList.add('tagline-2')
+    miniTagline.appendChild(newMiniTaglineAnd)
     miniTagline.appendChild(newMiniTagline2)
     newMiniImg.src = item['cover']
     newMiniTitle.innerHTML = item['title']
-    newMiniTagline1.innerHTML = item['tagline1'] + ' and '
+    newMiniTagline1.innerHTML = item['tagline1']
     newMiniTagline2.innerHTML = item['tagline2']
     newItem.appendChild(newMiniImg)
     newItem.appendChild(newMiniTitle)
     newItem.appendChild(miniTagline)
     savedCoversSection.appendChild(newItem)
   })
+};
+
+function removeSaved(e) {
+  if (e.target.matches('.target-item')) {
+    var myNewBook = new Cover(e.target.src, e.target.nextElementSibling.innerHTML, e.target.nextElementSibling.nextElementSibling.children[0].innerHTML, e.target.nextElementSibling.nextElementSibling.children[2].innerHTML);
+    for (i = 0; i < mySavedBooks.length; i++) {
+      if (myNewBook.cover == mySavedBooks[i].cover && myNewBook.title == mySavedBooks[i].title && myNewBook.tagline1 == mySavedBooks[i].tagline1 && myNewBook.tagline2 == mySavedBooks[i].tagline2) {
+        let index = i;
+        mySavedBooks.splice(index, 1);
+        localStorage.setItem('items', JSON.stringify(mySavedBooks));
+        break;
+      }
+    }
+  displaySaved()
+  } else {
+    return
+  }
 };
