@@ -46,16 +46,16 @@ localStorage.setItem('items', JSON.stringify(mySavedBooks));
 const data = JSON.parse(localStorage.getItem('items'))
 
 
-// var savedCovers = [
-//   new Cover("http://3.bp.blogspot.com/-iE4p9grvfpQ/VSfZT0vH2UI/AAAAAAAANq8/wwQZssi-V5g/s1600/Do%2BNot%2BForsake%2BMe%2B-%2BImage.jpg", "Sunsets and Sorrows", "sunsets", "sorrows")
-// ];
+var savedCovers = [
+  new Cover("http://3.bp.blogspot.com/-iE4p9grvfpQ/VSfZT0vH2UI/AAAAAAAANq8/wwQZssi-V5g/s1600/Do%2BNot%2BForsake%2BMe%2B-%2BImage.jpg", "Sunsets and Sorrows", "sunsets", "sorrows")
+];
 
 // var currentCover;
 var myCover;
 var newItem;
 
 // Add your event listeners here 👇
-document.addEventListener('DOMContentLoaded', randomPoster);
+window.addEventListener('load', randomPoster);
 randomCoverButton.addEventListener('click', randomPoster);
 makeNewButton.addEventListener('click', showMakeForm);
 homeButton.addEventListener('click', showMain);
@@ -74,10 +74,17 @@ function getRandomIndex(array) {
 }
 
 function randomPoster() {
-  coverImageMain.src = mySavedCovers[getRandomIndex(mySavedCovers)];
-  coverTitleMain.innerHTML= mySavedTitles[getRandomIndex(mySavedTitles)];
-  tagline1Main.innerHTML = mySavedDescriptors[getRandomIndex(mySavedDescriptors)];
-  tagline2Main.innerHTML= mySavedDescriptors[getRandomIndex(mySavedDescriptors)];
+  if (!mySavedCovers) {
+    coverImageMain.src = savedCovers.cover
+    coverTitleMain.innerHTML = savedCovers.title
+    tagline1Main.innerHTML = savedCovers.descriptor1
+    tagline2Main.innerHTML = savedCovers.descriptor2
+  } else {
+    coverImageMain.src = mySavedCovers[getRandomIndex(mySavedCovers)];
+    coverTitleMain.innerHTML= mySavedTitles[getRandomIndex(mySavedTitles)];
+    tagline1Main.innerHTML = mySavedDescriptors[getRandomIndex(mySavedDescriptors)];
+    tagline2Main.innerHTML= mySavedDescriptors[getRandomIndex(mySavedDescriptors)];
+  }
 };
 
 function showMakeForm() {
@@ -158,35 +165,49 @@ function saveNewPoster() {
 };
 
 function displaySaved() {
-  savedCoversSection.innerHTML = '';
+  var newItem = ''
   mySavedBooks.forEach(item => {
-    let newItem = document.createElement('div')
-    newItem.classList.add('mini-cover')
-    let newMiniImg = document.createElement('img')
-    newMiniImg.classList.add('mini-cover', 'target-item')
-    let newMiniTitle = document.createElement('h2')
-    newMiniTitle.classList.add('cover-title')
-    let miniTagline = document.createElement('h3')
-    miniTagline.classList.add('tagline')
-    miniTagline.innerHTML = "A tale of "
-    let newMiniTagline1 = document.createElement('span');
-    let newMiniTagline2 = document.createElement('span');
-    let newMiniTaglineAnd = document.createElement('span');
-    newMiniTaglineAnd.innerHTML = " and "
-    newMiniTagline1.classList.add('tagline-1')
-    miniTagline.appendChild(newMiniTagline1)
-    newMiniTagline2.classList.add('tagline-2')
-    miniTagline.appendChild(newMiniTaglineAnd)
-    miniTagline.appendChild(newMiniTagline2)
-    newMiniImg.src = item['cover']
-    newMiniTitle.innerHTML = item['title']
-    newMiniTagline1.innerHTML = item['tagline1']
-    newMiniTagline2.innerHTML = item['tagline2']
-    newItem.appendChild(newMiniImg)
-    newItem.appendChild(newMiniTitle)
-    newItem.appendChild(miniTagline)
-    savedCoversSection.appendChild(newItem)
+    debugger;
+    newItem += `
+      <div class="mini-cover saved-covers-section">
+        <img class="mini-cover target-item" src="${item['cover']}"/>
+        <h2 class="cover-title">${item['title']}</h2>
+        <h3 class="tagline">A tale of
+          <span class="tagline-1">${item['tagline1']}</span>
+          <span> and </span>
+          <span class="tagline-2">${item['tagline2']}</span>
+        </h3>
+      </div>
+    `
+
+    // let newItem = document.createElement('div')
+    // newItem.classList.add('mini-cover')
+    // let newMiniImg = document.createElement('img')
+    // newMiniImg.classList.add('mini-cover', 'target-item')
+    // let newMiniTitle = document.createElement('h2')
+    // newMiniTitle.classList.add('cover-title')
+    // let miniTagline = document.createElement('h3')
+    // miniTagline.classList.add('tagline')
+    // miniTagline.innerHTML = "A tale of "
+    // let newMiniTagline1 = document.createElement('span');
+    // let newMiniTagline2 = document.createElement('span');
+    // let newMiniTaglineAnd = document.createElement('span');
+    // newMiniTaglineAnd.innerHTML = " and "
+    // newMiniTagline1.classList.add('tagline-1')
+    // miniTagline.appendChild(newMiniTagline1)
+    // newMiniTagline2.classList.add('tagline-2')
+    // miniTagline.appendChild(newMiniTaglineAnd)
+    // miniTagline.appendChild(newMiniTagline2)
+    // newMiniImg.src = item['cover']
+    // newMiniTitle.innerHTML = item['title']
+    // newMiniTagline1.innerHTML = item['tagline1']
+    // newMiniTagline2.innerHTML = item['tagline2']
+    // newItem.appendChild(newMiniImg)
+    // newItem.appendChild(newMiniTitle)
+    // newItem.appendChild(miniTagline)
+    // savedCoversSection.appendChild(newItem)
   })
+  savedCoversSection.innerHTML = newItem;
 };
 
 function removeSaved(e) {
